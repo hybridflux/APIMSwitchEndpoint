@@ -15,8 +15,8 @@ namespace PingAPIMgmt
             {
                 client.Headers.Add("Content-Type:application/json"); //Content-Type  
                 client.Headers.Add("Accept:application/json");
-                client.Headers.Add("Ocp-Apim-Subscription-Key:57fa26836bc3482195f6e987a564f102");
-                var result = client.DownloadString("https://apimtestfeoifkldf.azure-api.net/northeu/api/HttpTriggerCSharp1"); //URI  
+                client.Headers.Add("[ENTER YOUR KEY HERE]");
+                var result = client.DownloadString("[ENTER YOUR API URI HERE]"); //URI  
                 DateTime currentDateTime = DateTime.Now;
 
                 Console.WriteLine("{0} - {1}",currentDateTime,Environment.NewLine + result);
