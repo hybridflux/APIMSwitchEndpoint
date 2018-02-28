@@ -134,7 +134,7 @@ I decided to create two policy files in my working directory, with the `backend-
         <set-backend-service id="apim-generated-policy" backend-id="[CHANGE THIS TO YOUR BACKEND ID]" />
 ``` 
 
-You can do a lot more with (https://docs.microsoft.com/en-us/azure/api-management/api-management-policies)[API Mananagement policies], but for this specific use case changing the `backend-id` was the only requirement. I could then set the policy with the Powershell command https://docs.microsoft.com/en-us/powershell/module/azurerm.apimanagement/set-azurermapimanagementpolicy?view=azurermps-5.4.0)[`Set-AzureRmApiManagementPolicy`] in _switchpolicy.ps1_. Ensure that you change the parameters to your specifics in the file:
+You can do a lot more with (https://docs.microsoft.com/en-us/azure/api-management/api-management-policies)[API Mananagement policies], but for this specific use case changing the `backend-id` was the only requirement. I could then set the policy with the Powershell command (https://docs.microsoft.com/en-us/powershell/module/azurerm.apimanagement/set-azurermapimanagementpolicy?view=azurermps-5.4.0)[Set-AzureRmApiManagementPolicy] in _switchpolicy.ps1_. Ensure that you change the parameters to your specifics in the file:
 ``` 
 # Parameters // Change according to your settings
 $ResourceGroupName = 'acf-api-mgmt' # Name of the RG which contains the APIM service
