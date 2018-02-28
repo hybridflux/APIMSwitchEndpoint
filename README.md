@@ -129,12 +129,65 @@ Notice the backend-id for the API. This will be needed at a later stage for the 
 
 ## Switching between API backends
 
+I decided to create two policy files in my working directory, with the `backend-id` set to the specific API ID I wanted to point to:  
+```
+        <set-backend-service id="apim-generated-policy" backend-id="[CHANGE THIS TO YOUR BACKEND ID]" />
+``` 
+
+You can do a lot more with (https://docs.microsoft.com/en-us/azure/api-management/api-management-policies)[API Mananagement policies], but for this specific use case changing the `backend-id` was the only requirement. I could then set the policy with the Powershell command https://docs.microsoft.com/en-us/powershell/module/azurerm.apimanagement/set-azurermapimanagementpolicy?view=azurermps-5.4.0)[`Set-AzureRmApiManagementPolicy`] in _switchpolicy.ps1_. Ensure that you change the parameters to your specifics in the file:
+``` 
+# Parameters // Change according to your settings
+$ResourceGroupName = 'acf-api-mgmt' # Name of the RG which contains the APIM service
+$APIName = 'northeu.azurewebsites.net' # Name of your API
+$PolicyFileNameFirst = 'policyfile_west.txt' # Policyfile to switch to or from
+$PolicyFileNameSecond = 'policyfile_north.txt' # Policyfile to switch to or from
+$PSScriptRoot = "C:\Users\smanalo\Source\Repos\PingAPIMgmt\" # Working directory, make sure your files are in this one
+``` 
+
+It prompts you for a _first_ or _second_ choice, which in my case were the files for West and North EU, respectively. 
+
+```  
+#Prompt for switch 
+$whereto = ''
+$whereto = Read-Host -Prompt 'Switch to this API (first,second)'
+Write-Host "You chose" $whereto
+```  
+
+This part gets the context of API Management, reads the policy file, and sets it to your choice:
+
+``` 
+# Get context and set URL
+$ApiMgmtObj = Get-AzureRmApiManagement -ResourceGroupName $ResourceGroupName
+$ApimUrl = $ApiMgmtObj.RuntimeUrl
+$ApimService = $ApiMgmtObj.Name
+
+$ApiMgmtContext = New-AzureRmApiManagementContext -ResourceGroupName $ResourceGroupName -ServiceName $ApimService
+$switchapi = Get-AzureRmApiManagementApi -Context $ApiMgmtContext -Name $APIName
+
+# Read Policy File
+if ($whereto -eq 'first') {$PolicyFileName = $PolicyFileNameFirst; 
+        Write-Host "Please wait, switching to First API"; }
+    elseif ($whereto -eq 'second') {$PolicyFileName = $PolicyFileNameSecond; 
+        Write-Host "Please wait, switching to Second API"; }
+    else { Write-Host "You did not enter a valid option"; 
+       exit; }
+
+
+$PolicyFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $PolicyFileName))
+``` 
+
+Finally, the API policy is set and you get an output of the actual policy for the API.
+
+```  
+Set-AzureRmApiManagementPolicy -Context $ApiMgmtContext -ApiId $switchapi.ApiId -PolicyFile $PolicyFile
+
+$Policy = Get-AzureRmApiManagementPolicy -Context $ApiMgmtContext -ApiId $switchapi.ApiId
+
+Write-Host "Current policy is: " $Policy
+``` 
 
 
 
 
-
-## Use case
-Run Login-AzureRmAccount to login
 
 
